@@ -1,15 +1,16 @@
-name: Flask CI/CD Pipeline
+name: Flask CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Setup Python
@@ -17,11 +18,11 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install Dependencies
+    - name: Install dependencies
       run: |
         pip install -r requirements.txt
 
-    - name: Run Tests
+    - name: Run tests
       run: |
         pytest
 
@@ -30,15 +31,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy to Ubuntu Server via SSH
+    - name: Deploy via SSH
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-
         script: |
-          cd /var/www/testflaskapp
+          cd /home/ubuntu/flask-app
           git pull origin main
           source venv/bin/activate
           pip install -r requirements.txt
