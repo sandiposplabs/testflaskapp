@@ -6,38 +6,22 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
+    - name: Go to project directory and deploy
       run: |
+        cd /var/www/html/dev_app
+        git pull origin main
+
+        # Activate virtual environment (if exists)
+        if [ -d "venv" ]; then
+          source venv/bin/activate
+        fi
+
+        # Install/update dependencies
         pip install -r requirements.txt
 
-    - name: Run tests
-      run: |
-        pytest || echo "No tests found"
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Deploy to Ubuntu Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: 172.31.2.115
-        username: ubuntu
-        key: ${{ secrets.VPNUSTEST }}
-        script: |
-          cd /var/www/html/dev_app
-          git pull origin main
-          sudo systemctl restart your-app
+        # Restart Flask service
+        sudo systemctl restart flask-app
