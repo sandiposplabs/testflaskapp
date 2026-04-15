@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Flask CI/CD Working!, checking updates"
+    return "Flask CI/CD Working!, changes to dev"
 
 if __name__ == "__main__":
     app.run()
