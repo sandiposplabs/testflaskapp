@@ -13,7 +13,8 @@ jobs:
       - name: Deploy Flask Dev
         run: |
           cd /var/www/flask/dev
-          git pull origin dev
+          git fetch origin
+          git reset --hard origin/dev
           source venv/bin/activate
           pip install -r requirements.txt
           sudo systemctl restart flask-dev
