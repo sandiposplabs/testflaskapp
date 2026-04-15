@@ -1,49 +1,19 @@
-name: Deploy Flask (Self Hosted)
+name: Deploy Dev Flask
 
 on:
   push:
     branches:
-      - develop
-      - uat
-      - main
+      - dev
 
 jobs:
-
-  deploy-dev:
-    if: github.ref == 'refs/heads/develop'
+  deploy:
     runs-on: self-hosted
 
     steps:
-      - name: Deploy Dev
+      - name: Deploy Flask Dev
         run: |
           cd /var/www/flask/dev
-          git pull origin develop
+          git pull origin dev
           source venv/bin/activate
           pip install -r requirements.txt
           sudo systemctl restart flask-dev
-
-  deploy-uat:
-    if: github.ref == 'refs/heads/uat'
-    runs-on: self-hosted
-
-    steps:
-      - name: Deploy UAT
-        run: |
-          cd /var/www/flask/uat
-          git pull origin uat
-          source venv/bin/activate
-          pip install -r requirements.txt
-          sudo systemctl restart flask-uat
-
-  deploy-prod:
-    if: github.ref == 'refs/heads/main'
-    runs-on: self-hosted
-
-    steps:
-      - name: Deploy Prod
-        run: |
-          cd /var/www/flask/prod
-          git pull origin main
-          source venv/bin/activate
-          pip install -r requirements.txt
-          sudo systemctl restart flask-prod
