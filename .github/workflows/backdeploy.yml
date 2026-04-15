@@ -1,0 +1,27 @@
+name: Flask CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Go to project directory and deploy
+      run: |
+        cd /var/www/html/dev_app
+        git pull origin main
+
+        # Activate virtual environment (if exists)
+        if [ -d "venv" ]; then
+          source venv/bin/activate
+        fi
+
+        # Install/update dependencies
+        pip install -r requirements.txt
+
+        # Restart Flask service
+        sudo systemctl restart flask-app
